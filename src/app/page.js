@@ -1,25 +1,45 @@
 "use client";
 import React, { useState } from "react";
-const page = () => {
-  // add data in table
+
+const Page = () => {
   const [Name, setName] = useState("");
   const [Task, setTask] = useState("");
-  let [Data, setData] = useState([]);
+  const [Data, setData] = useState([]);
   const [indexEdi, setIndex] = useState();
   let h3 = "none";
+
   if (Data.length === 0) {
     h3 = "block";
   } else {
     h3 = "none";
   }
 
-  // add data in table function
   function addData(e) {
     e.preventDefault();
     setData([...Data, { name: Name, task: Task, index: Data.length }]);
     setName("");
     setTask("");
   }
+
+  function delVal(index) {
+    const updatedData = Data.filter((_, i) => i !== index);
+    setData(updatedData);
+  }
+
+  function ediVal(index) {
+    setName(Data[index].name);
+    setTask(Data[index].task);
+    setIndex(Data[index].index);
+  }
+
+  function saveVal(e) {
+    let Datas = [...Data];
+    Datas[indexEdi] = { name: Name, task: Task, index: indexEdi };
+    setData(Datas);
+    setName("");
+    setTask("");
+  }
+
   var dataTable = Data.map(function (item, index) {
     return (
       <tr
@@ -51,27 +71,6 @@ const page = () => {
       </tr>
     );
   });
-
-  // delData  in table function
-  function delVal(index) {
-    const updatedData = Data.filter((_, i) => i !== index);
-    setData(updatedData);
-  }
-  function ediVal(index) {
-    setName(Data[index].name);
-    setTask(Data[index].task);
-    setIndex(Data[index].index);
-  }
-
-  function saveVal(e) {
-    let Datas = [...Data]; // Create a new array to avoid modifying the original state directly
-    Datas[indexEdi] = { name: Name, task: Task, index: indexEdi };
-    // Then, update the state with the new array
-    setData(Datas);
-    setName("");
-    setTask("");
-  }
-  // ediBtns function
 
   return (
     <div>
@@ -137,7 +136,6 @@ const page = () => {
 
           <tbody>
             {dataTable}
-            {/* {Data.length === 0 && <h3>Data is Empty.... Add Some Data</h3>} */}
             <h3
               style={{ display: h3 }}
               className="text-center p-4 text-xl w-full"
@@ -151,4 +149,5 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
+cs
