@@ -1,113 +1,154 @@
-import Image from 'next/image'
+"use client";
+import React, { useState } from "react";
+const page = () => {
+  // add data in table
+  const [Name, setName] = useState("");
+  const [Task, setTask] = useState("");
+  let [Data, setData] = useState([]);
+  const [indexEdi, setIndex] = useState();
+  let h3 = "none";
+  if (Data.length === 0) {
+    h3 = "block";
+  } else {
+    h3 = "none";
+  }
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // add data in table function
+  function addData(e) {
+    e.preventDefault();
+    setData([...Data, { name: Name, task: Task, index: Data.length }]);
+    setName("");
+    setTask("");
+  }
+  var dataTable = Data.map(function (item, index) {
+    return (
+      <tr
+        key={index}
+        className="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
+      >
+        <th
+          scope="row"
+          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+        >
+          {index + 1}
+        </th>
+        <td className="px-6 py-4">{item.name}</td>
+        <td className="px-6 py-4">{item.task}</td>
+        <td className="px-6">
+          <button
+            className="bg-red-700 text-white px-3 py-2 rounded-lg mr-2"
+            onClick={() => delVal(index)}
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+            Delete
+          </button>
+          <button
+            className="bg-yellow-500 text-white px-3 py-2 rounded-lg"
+            onClick={() => ediVal(index)}
+          >
+            Edit
+          </button>
+        </td>
+      </tr>
+    );
+  });
+
+  // delData  in table function
+  function delVal(index) {
+    const updatedData = Data.filter((_, i) => i !== index);
+    setData(updatedData);
+  }
+  function ediVal(index) {
+    setName(Data[index].name);
+    setTask(Data[index].task);
+    setIndex(Data[index].index);
+  }
+
+  function saveVal(e) {
+    let Datas = [...Data]; // Create a new array to avoid modifying the original state directly
+    Datas[indexEdi] = { name: Name, task: Task, index: indexEdi };
+    // Then, update the state with the new array
+    setData(Datas);
+    setName("");
+    setTask("");
+  }
+  // ediBtns function
+
+  return (
+    <div>
+      <div className="w-1/3 bg-white mx-auto mt-3 p-6 shadow-2xl rounded-2xl">
+        <form onSubmit={addData}>
+          <div className=" mb-3">
+            <input
+              type="text"
+              id="Name"
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Enter the Name"
+              value={Name}
+              onChange={(e) => setName(e.target.value)}
+              required
             />
-          </a>
-        </div>
+          </div>
+          <div className="mb-3">
+            <input
+              type="text"
+              id="Task"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Enter the Task"
+              value={Task}
+              onChange={(e) => setTask(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 block"
+          >
+            Add
+          </button>
+          <button
+            type="button"
+            className="text-white bg-orange-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center dark:bg-orange-700 dark:hover:bg-blue-700 dark:focus:ring-blue-800 block mt-2"
+            onClick={saveVal}
+          >
+            Save Edit
+          </button>
+        </form>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div className="relative overflow-x-auto sm:rounded-lg w-1/2 bg-white mx-auto mt-3 shadow-2xl rounded-2xl">
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Id
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Names
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Task
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Action
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {dataTable}
+            {/* {Data.length === 0 && <h3>Data is Empty.... Add Some Data</h3>} */}
+            <h3
+              style={{ display: h3 }}
+              className="text-center p-4 text-xl w-full"
+            >
+              Data is Empty.... Add Some Data
+            </h3>
+          </tbody>
+        </table>
       </div>
+    </div>
+  );
+};
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default page;
